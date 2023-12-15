@@ -1,0 +1,62 @@
+{
+    "name": "mitydigital/statamic-scheduled-cache-invalidator",
+    "description": "A command to help invalidate the cache when scheduled Statamic entries are due to go live.",
+    "type": "statamic-addon",
+    "keywords": [
+        "statamic",
+        "cache"
+    ],
+    "autoload": {
+        "psr-4": {
+            "MityDigital\\StatamicScheduledCacheInvalidator\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MityDigital\\StatamicScheduledCacheInvalidator\\Tests\\": "tests"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marty Friedel"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "statamic/cms": "^4.0"
+    },
+    "extra": {
+        "statamic": {
+            "name": "Scheduled Cache Invalidator for Statamic",
+            "description": "A command to help invalidate the cache when scheduled Statamic entries are due to go live."
+        },
+        "laravel": {
+            "providers": [
+                "MityDigital\\StatamicScheduledCacheInvalidator\\ServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.9",
+        "orchestra/testbench": "^8.5",
+        "laravel/pint": "^1.10",
+        "spatie/pest-plugin-test-time": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.1",
+        "spatie/x-ray": "^1.1"
+    },
+    "scripts": {
+        "pint": [
+            "./vendor/bin/pint"
+        ],
+        "test": [
+            "php -d memory_limit=-1 -d max_execution_time=0 ./vendor/bin/pest"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "pixelfear/composer-dist-plugin": true
+        }
+    }
+}
