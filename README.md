@@ -9,7 +9,21 @@
 
 <!-- /statamic:hide -->
 
-> A command to help invalidate the cache when scheduled Statamic entries are due to go live
+> A command to help invalidate the static cache when scheduled entries are due to go live.
+
+## What is it?
+
+Let's say you have a Blog, and your Statamic site uses full (or half) Static Caching.
+
+Now, imagine you have written a blog post that you want to go live at midday tomorrow.
+
+What would you prefer to do:
+
+- wait around until midday tomorrow to manually click publish at 12:00 on the dot, or
+- publish now, and have this utility take care of flushing the cache for you?
+
+This command is designed to be run every minute, and looks for Entries (in all of your **dated** Collections) that are
+scheduled to be published at that minute.
 
 ## Documentation
 
