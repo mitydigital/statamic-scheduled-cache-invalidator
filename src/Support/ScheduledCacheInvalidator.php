@@ -21,11 +21,16 @@ class ScheduledCacheInvalidator
         return CollectionFacade::all()
             ->filter(fn (Collection $collection) => $collection->dated())
             ->map(function (Collection $collection) use ($now) {
-                return Entry::query()
+                $entries = Entry::query()
                     ->where('collection', $collection->handle())
                     ->where('published', true)
                     ->whereTime($collection->sortField() ?? 'date', $now)
                     ->get();
+                    
+                // this triggers any publish status changes in the stache
+                $entries->each->saveQuietly();
+                
+                return $entries;
             })
             ->filter()
             ->flatten();
