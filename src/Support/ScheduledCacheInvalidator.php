@@ -6,22 +6,28 @@ use Carbon\Carbon;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use Statamic\Facades\Entry;
+use Statamic\Support\Str;
 
 class ScheduledCacheInvalidator
 {
-    public function getCollections(): \Illuminate\Support\Collection
+    public function getEntries(): \Illuminate\Support\Collection
     {
         // what is "now"? how existential...
         $now = Carbon::now()->format('Y-m-d H:i');
 
-        // get the collections that have a "date" (or whatever the collection is configured for) where an entry
-        // is due to be published this minute
+        // get the entries inside a dated collection
+        // that have a "date" (or whatever the collection is configured for)
+        // due to be published this minute
         return CollectionFacade::all()
-            ->filter(fn (Collection $collection) => $collection->dated() && Entry::query()
-                ->where('collection', $collection->handle())
-                ->where('published', true)
-                ->whereTime($collection->sortField() ?? 'date', $now)
-                ->count())
+            ->filter(fn (Collection $collection) => $collection->dated())
+            ->map(function (Collection $collection) use ($now) {
+                return Entry::query()
+                    ->where('collection', $collection->handle())
+                    ->where('published', true)
+                    ->whereTime($collection->sortField() ?? 'date', $now)
+                    ->get();
+            })
+            ->filter()
             ->flatten();
     }
 }

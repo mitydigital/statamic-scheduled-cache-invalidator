@@ -3,7 +3,7 @@
 use MityDigital\StatamicScheduledCacheInvalidator\Console\Commands\RunCommand;
 use MityDigital\StatamicScheduledCacheInvalidator\Support\ScheduledCacheInvalidator;
 use Mockery\MockInterface;
-use Statamic\Facades\Collection;
+use Statamic\Facades\Entry;
 use Statamic\StaticCaching\Invalidator;
 
 beforeEach(function () {
@@ -28,7 +28,7 @@ it('returns the correct message when static caching enabled', function () {
 
     // return nothing
     $this->partialMock(ScheduledCacheInvalidator::class, function (MockInterface $mock) {
-        $mock->shouldReceive('getCollections')
+        $mock->shouldReceive('getEntries')
             ->andReturn(collect([]));
     });
 
@@ -47,18 +47,18 @@ it('returns the correct message when static caching enabled', function () {
         ->assertExitCode(0);
 });
 
-it('invalidates the cache for a single collection', function () {
+it('invalidates the cache for a single entry', function () {
     // enable caching
     config(['statamic.static_caching.strategy' => 'full']);
 
-    // get a single collection
-    $collection = Collection::findByHandle('dated');
+    // get a single entry
+    $entry = Entry::make()->id('test');
 
-    $this->partialMock(ScheduledCacheInvalidator::class, function (MockInterface $mock) use ($collection) {
-        $mock->shouldReceive('getCollections')
+    $this->partialMock(ScheduledCacheInvalidator::class, function (MockInterface $mock) use ($entry) {
+        $mock->shouldReceive('getEntries')
             ->once()
             ->andReturn(collect([
-                $collection,
+                $entry,
             ]));
     });
 
@@ -67,27 +67,27 @@ it('invalidates the cache for a single collection', function () {
     });
 
     $this->artisan('statamic:scheduled-cache-invalidator:run')
-        ->expectsOutput('Scheduled Cache Invalidator found 1 Collection to invalidate:')
-        ->expectsOutput('Static Cache invalidated for "'.$collection->title().'"')
+        ->expectsOutput('Scheduled Cache Invalidator found 1 Entry to invalidate:')
+        ->expectsOutput('Static Cache invalidated for Entry "'.$entry->id().'"')
         ->expectsOutput('Scheduled Cache Invalidator has finished.')
         ->assertExitCode(0);
 });
 
-it('invalidates the cache for multiple collection', function () {
+it('invalidates the cache for multiple entries', function () {
     // enable caching
     config(['statamic.static_caching.strategy' => 'full']);
 
-    // get two collections
-    $collection = Collection::findByHandle('dated');
-    $collection2 = Collection::findByHandle('dated_and_timed');
+    // get two entries
+    $entry1 = Entry::make()->id('test1');
+    $entry2 = Entry::make()->id('test2');
 
     $this->partialMock(ScheduledCacheInvalidator::class,
-        function (MockInterface $mock) use ($collection, $collection2) {
-            $mock->shouldReceive('getCollections')
+        function (MockInterface $mock) use ($entry1, $entry2) {
+            $mock->shouldReceive('getEntries')
                 ->once()
                 ->andReturn(collect([
-                    $collection,
-                    $collection2,
+                    $entry1,
+                    $entry2,
                 ]));
         });
 
@@ -96,9 +96,9 @@ it('invalidates the cache for multiple collection', function () {
     });
 
     $this->artisan('statamic:scheduled-cache-invalidator:run')
-        ->expectsOutput('Scheduled Cache Invalidator found 2 Collections to invalidate:')
-        ->expectsOutput('Static Cache invalidated for "'.$collection->title().'"')
-        ->expectsOutput('Static Cache invalidated for "'.$collection2->title().'"')
+        ->expectsOutput('Scheduled Cache Invalidator found 2 Entries to invalidate:')
+        ->expectsOutput('Static Cache invalidated for Entry "'.$entry1->id().'"')
+        ->expectsOutput('Static Cache invalidated for Entry "'.$entry2->id().'"')
         ->expectsOutput('Scheduled Cache Invalidator has finished.')
         ->assertExitCode(0);
 });
