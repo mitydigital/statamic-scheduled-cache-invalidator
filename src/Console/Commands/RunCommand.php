@@ -5,7 +5,7 @@ namespace MityDigital\StatamicScheduledCacheInvalidator\Console\Commands;
 use Illuminate\Console\Command;
 use MityDigital\StatamicScheduledCacheInvalidator\Support\ScheduledCacheInvalidator;
 use Statamic\Console\RunsInPlease;
-use Statamic\Entries\Collection;
+use Statamic\Contracts\Entries\Entry;
 use Statamic\StaticCaching\Invalidator;
 
 class RunCommand extends Command
@@ -31,34 +31,34 @@ class RunCommand extends Command
         $support = app(ScheduledCacheInvalidator::class);
 
         // get some entries
-        $collections = $support->getCollections();
+        $entries = $support->getEntries();
 
         // do we have entries?
-        if ($collections->count()) {
+        if ($entries->count()) {
             // let's make the invalidator
             $invalidator = app(Invalidator::class);
 
             // let's communicate - single or plural
-            $this->info(__($collections->count() === 1 ? 'statamic-scheduled-cache-invalidator::command.collections.single' : 'statamic-scheduled-cache-invalidator::command.collections.count',
+            $this->info(__($entries->count() === 1 ? 'statamic-scheduled-cache-invalidator::command.entries.single' : 'statamic-scheduled-cache-invalidator::command.entries.count',
                 [
-                    'count' => $collections->count(),
+                    'count' => $entries->count(),
                 ]));
 
-            // let's clear the cache for each Collection's mount
-            $collections->each(function (Collection $collection, $index) use ($invalidator) {
+            // let's clear the cache for each Entry
+            $entries->each(function (Entry $entry, $index) use ($invalidator) {
                 // invalidate magic!
-                $invalidator->invalidate($collection);
+                $invalidator->invalidate($entry);
 
                 // progress output
-                $this->line(__('statamic-scheduled-cache-invalidator::command.collections.invalidated', [
-                    'collection' => $collection->title(),
+                $this->line(__('statamic-scheduled-cache-invalidator::command.entries.invalidated', [
+                    'id' => $entry->id(),
                 ]));
             });
 
             $this->info(__('statamic-scheduled-cache-invalidator::command.completed'));
         } else {
             // nothing to do, let's finish this up
-            $this->info(__('statamic-scheduled-cache-invalidator::command.collections.none'));
+            $this->info(__('statamic-scheduled-cache-invalidator::command.entries.none'));
         }
     }
 }
