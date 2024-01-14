@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use Statamic\Facades\Entry;
-use Statamic\Support\Str;
 
 class ScheduledCacheInvalidator
 {
@@ -26,10 +25,10 @@ class ScheduledCacheInvalidator
                     ->where('published', true)
                     ->whereTime($collection->sortField() ?? 'date', $now)
                     ->get();
-                    
+
                 // this triggers any publish status changes in the stache
                 $entries->each->saveQuietly();
-                
+
                 return $entries;
             })
             ->filter()
