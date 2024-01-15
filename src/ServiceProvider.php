@@ -4,7 +4,6 @@ namespace MityDigital\StatamicScheduledCacheInvalidator;
 
 use MityDigital\StatamicScheduledCacheInvalidator\Console\Commands\RunCommand;
 use Statamic\Providers\AddonServiceProvider;
-use Statamic\StaticCaching\Invalidator;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -14,8 +13,14 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootAddon()
     {
-        $invalidator = app(Invalidator::class);
-        //dd($invalidator);
-        parent::bootAddon();
+        $this->mergeConfigFrom(__DIR__.'/../config/statamic-scheduled-cache-invalidator.php', 'statamic-scheduled-cache-invalidator');
+
+        if ($this->app->runningInConsole()) {
+
+            $this->publishes([
+                __DIR__.'/../config/statamic-scheduled-cache-invalidator.php' => config_path('statamic-scheduled-cache-invalidator.php'),
+            ], 'statamic-scheduled-cache-invalidator');
+
+        }
     }
 }
