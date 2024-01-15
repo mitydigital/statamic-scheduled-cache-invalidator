@@ -72,12 +72,10 @@ it('supports query scopes', function () {
     // freeze time to be ON publish - this is when the undated entry has a "date" param
     testTime()->freeze('2023-12-07 00:00:00');
 
-    app('statamic.scopes')[TestScope::handle()] = TestScope::class;
-
-    config()->set('statamic-scheduled-cache-invalidator.query_scope', 'test_scope');
+    config()->set('statamic-scheduled-cache-invalidator.query_scopes.all', TestScope::class);
 
     $this->partialMock(TestScope::class, function (MockInterface $mock) {
-        $mock->shouldReceive('apply')->once();
+        $mock->shouldReceive('apply')->times(2);
     });
 
     // should have nothing returned - it's not dated

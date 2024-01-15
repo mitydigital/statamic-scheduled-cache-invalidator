@@ -2,8 +2,10 @@
 
 return [
 
-    // if you want to add to the entry query specify the name of a query scope
-    // you have defined here. the scope will received the collection in its $values
-    'query_scope' => null,
+    'query_scopes' => [
+        // collection_handle => \Path\To\Scope::class,
+        // or
+        // 'all' => \Path\To\Scope::class,
+    ],
 
 ];
