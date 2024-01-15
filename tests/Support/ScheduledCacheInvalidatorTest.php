@@ -1,10 +1,10 @@
 <?php
 
 use MityDigital\StatamicScheduledCacheInvalidator\Support\ScheduledCacheInvalidator;
-
 use Mockery\MockInterface;
-use function Spatie\PestPluginTestTime\testTime;
 use Statamic\Query\Scopes\Scope;
+
+use function Spatie\PestPluginTestTime\testTime;
 
 it('correctly gets an entry when time is disabled for the collection', function () {
     // get the support
@@ -71,11 +71,11 @@ it('supports query scopes', function () {
 
     // freeze time to be ON publish - this is when the undated entry has a "date" param
     testTime()->freeze('2023-12-07 00:00:00');
-    
+
     app('statamic.scopes')[TestScope::handle()] = TestScope::class;
-    
+
     config()->set('statamic-scheduled-cache-invalidator.query_scope', 'test_scope');
-    
+
     $this->partialMock(TestScope::class, function (MockInterface $mock) {
         $mock->shouldReceive('apply')->once();
     });
