@@ -23,7 +23,13 @@ class ScheduledCacheInvalidator
                 $entries = Entry::query()
                     ->where('collection', $collection->handle())
                     ->where('published', true)
-                    ->whereTime($collection->sortField() ?? 'date', $now)
+                    ->where(function ($query) use ($collection, $now) {
+                        $query->whereTime($collection->sortField() ?? 'date', $now);
+
+                        if ($scope = config('statamic-scheduled-cache-invalidator.query_scopes.'.$collection->handle(), config('statamic-scheduled-cache-invalidator.query_scopes.all'))) {
+                            app($scope)->apply($query, ['collection' => $collection, 'now' => $now]);
+                        }
+                    })
                     ->get();
 
                 // this triggers any publish status changes in the stache
