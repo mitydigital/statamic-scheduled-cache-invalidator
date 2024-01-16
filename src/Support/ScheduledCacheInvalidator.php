@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use Statamic\Facades\Entry;
+use Statamic\Support\Arr;
 
 class ScheduledCacheInvalidator
 {
@@ -26,7 +27,17 @@ class ScheduledCacheInvalidator
                     ->where(function ($query) use ($collection, $now) {
                         $query->whereTime($collection->sortField() ?? 'date', $now);
 
-                        if ($scope = config('statamic-scheduled-cache-invalidator.query_scopes.'.$collection->handle(), config('statamic-scheduled-cache-invalidator.query_scopes.all'))) {
+                        // what scope do we want to use?
+                        $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
+
+                        // are we an array of collections?
+                        if (is_array($scope)) {
+                            // get the scope from the array
+                            $scope = Arr::get($scope, $collection->handle(), null);
+                        }
+
+                        // if we have a scope, apply it
+                        if ($scope) {
                             app($scope)->apply($query, ['collection' => $collection, 'now' => $now]);
                         }
                     })
