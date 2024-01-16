@@ -82,6 +82,27 @@ it('supports query scopes', function () {
     expect($support->getEntries())->toHaveCount(0);
 });
 
+it('supports query scopes for a collection but set up as an array', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    // freeze time to be ON publish - this is when the undated entry has a "date" param
+    testTime()->freeze('2023-12-07 00:00:00');
+
+    config()->set('statamic-scheduled-cache-invalidator.query_scopes.dated_and_timed', AnotherTestScope::class);
+
+    $this->partialMock(TestScope::class, function (MockInterface $mock) {
+        $mock->shouldReceive('apply')->times(0);
+    });
+
+    $this->partialMock(AnotherTestScope::class, function (MockInterface $mock) {
+        $mock->shouldReceive('apply')->times(1);
+    });
+
+    // should have nothing returned - it's not dated
+    expect($support->getEntries())->toHaveCount(0);
+});
+
 it('supports query scopes for collections', function () {
     // get the support
     $support = app(ScheduledCacheInvalidator::class);
