@@ -25,7 +25,7 @@ class ScheduledCacheInvalidator
                     ->where('collection', $collection->handle())
                     ->where('published', true)
                     ->where(function ($query) use ($collection, $now) {
-                        $query->whereTime($collection->sortField() ?? 'date', $now);
+                        $query->where(fn ($query) => $query->whereDate($collection->sortField() ?? 'date', $now)->whereTime($collection->sortField() ?? 'date', $now));
 
                         // what scope do we want to use?
                         $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
