@@ -45,8 +45,21 @@ it('correctly gets an entry when time is enabled for the collection', function (
     $entries = $support->getEntries();
 
     // should have 1, and the "dated_and_timed" collection
-    expect($entries)->toHaveCount(1)
-        ->and($entries->first()->collection()->handle())->toBe('dated_and_timed');
+    expect($entries)
+        ->toHaveCount(1)
+        ->and($entries->first()->collection()->handle())
+        ->toBe('dated_and_timed');
+
+    // freeze time to be ON publish, but an earlier day
+    testTime()->freeze('2023-12-14 11:56:00');
+
+    $entries = $support->getEntries();
+
+    // should have 1, and the "dated_and_timed_other" collection (same time, different day)
+    expect($entries)
+        ->toHaveCount(1)
+        ->and($entries->first()->collection()->handle())
+        ->toBe('dated_and_timed_other');
 
     // freeze time to be AFTER publish
     testTime()->freeze('2023-12-15 11:57:00');
@@ -54,7 +67,7 @@ it('correctly gets an entry when time is enabled for the collection', function (
     expect($support->getEntries())->toHaveCount(0);
 });
 
-it('does not return entried from an undated collection', function () {
+it('does not return entries from an undated collection', function () {
     // get the support
     $support = app(ScheduledCacheInvalidator::class);
 
@@ -75,7 +88,7 @@ it('supports query scopes', function () {
     config()->set('statamic-scheduled-cache-invalidator.query_scopes', TestScope::class);
 
     $this->partialMock(TestScope::class, function (MockInterface $mock) {
-        $mock->shouldReceive('apply')->times(2);
+        $mock->shouldReceive('apply')->times(3);
     });
 
     // should have nothing returned - it's not dated
