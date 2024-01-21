@@ -53,4 +53,4 @@ help you. So be awesome - it'll feel fantastic.
 ## Credits
 
 - [Marty Friedel](https://github.com/martyf)
-- [Ryan Mitchell](https://github.com/ryanmitchell) for tweaking clearing behaviour to help with entries and adding query scope support
+- [Ryan Mitchell](https://github.com/ryanmitchell) for tweaking clearing behaviour to help with entries, adding query scope support, and date/time query corrections following core updates
