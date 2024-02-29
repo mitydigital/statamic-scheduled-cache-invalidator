@@ -8,7 +8,6 @@ use Statamic\Facades\Entry;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use MityDigital\StatamicScheduledCacheInvalidator\Scopes\DateIsPast;
-use MityDigital\StatamicScheduledCacheInvalidator\Scopes\NullScope;
 
 class ScheduledCacheInvalidator
 {
@@ -17,11 +16,8 @@ class ScheduledCacheInvalidator
         // what is "now"? how existential...
         $now = Carbon::now();
 
-        // get the entries inside a dated collection
-        // that have a "date" (or whatever the collection is configured for)
-        // due to be published this minute
         return CollectionFacade::all()
-            ->filter(fn (Collection $collection) => $collection->dated())
+            ->filter(fn ($collection) => $this->scopes($collection)->isNotEmpty())
             ->map(function (Collection $collection) use ($now) {
                 return Entry::query()
                     ->where('collection', $collection->handle())
@@ -33,7 +29,7 @@ class ScheduledCacheInvalidator
             ->each->saveQuietly();
     }
 
-    protected function scopes($collection): \Illuminate\Support\Collection
+    protected function scopes(Collection $collection): \Illuminate\Support\Collection
     {
         $scopes = collect();
 

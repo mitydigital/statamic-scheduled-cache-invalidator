@@ -88,11 +88,11 @@ it('supports query scopes', function () {
     config()->set('statamic-scheduled-cache-invalidator.query_scopes', TestScope::class);
 
     $this->partialMock(TestScope::class, function (MockInterface $mock) {
-        $mock->shouldReceive('apply')->times(3);
+        $mock->shouldReceive('apply')->times(4);
     });
 
     // should have nothing returned - it's not dated
-    expect($support->getEntries())->toHaveCount(0);
+    expect($support->getEntries())->toHaveCount(1);
 });
 
 it('supports query scopes for a collection but set up as an array', function () {
