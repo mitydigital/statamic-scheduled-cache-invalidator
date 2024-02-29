@@ -8,6 +8,7 @@ use Statamic\Facades\Entry;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use MityDigital\StatamicScheduledCacheInvalidator\Scopes\DateIsPast;
+use MityDigital\StatamicScheduledCacheInvalidator\Scopes\NullScope;
 
 class ScheduledCacheInvalidator
 {
@@ -26,21 +27,9 @@ class ScheduledCacheInvalidator
                     ->where('collection', $collection->handle())
                     ->where('published', true)
                     ->where(function ($query) use ($collection, $now) {
-                        app(DateIsPast::class)->apply($query, ['collection' => $collection, 'now' => $now]);
-
-                        // what scope do we want to use?
-                        $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
-
-                        // are we an array of collections?
-                        if (is_array($scope)) {
-                            // get the scope from the array
-                            $scope = Arr::get($scope, $collection->handle(), null);
-                        }
-
-                        // if we have a scope, apply it
-                        if ($scope) {
-                            app($scope)->apply($query, ['collection' => $collection, 'now' => $now]);
-                        }
+                        $this->scopes($collection)
+                            ->each
+                            ->apply($query, ['collection' => $collection, 'now' => $now]);
                     })
                     ->get();
 
@@ -51,5 +40,26 @@ class ScheduledCacheInvalidator
             })
             ->filter()
             ->flatten();
+    }
+
+    protected function scopes($collection): \Illuminate\Support\Collection
+    {
+        $scopes = collect();
+
+        if ($collection->dated()) {
+            $scopes->push(DateIsPast::class);
+        }
+
+        $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
+
+        $scope = is_array($scope)
+            ? Arr::get($scope, $collection->handle())
+            : $scope;
+
+        if ($scope) {
+            $scopes->push($scope);
+        }
+
+        return $scopes->map(fn ($scope) => app($scope));
     }
 }
