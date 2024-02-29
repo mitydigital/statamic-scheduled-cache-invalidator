@@ -7,7 +7,7 @@ use Statamic\Support\Arr;
 use Statamic\Facades\Entry;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
-use MityDigital\StatamicScheduledCacheInvalidator\Scopes\DateIsPast;
+use MityDigital\StatamicScheduledCacheInvalidator\Scopes\Now;
 
 class ScheduledCacheInvalidator
 {
@@ -34,7 +34,7 @@ class ScheduledCacheInvalidator
         $scopes = collect();
 
         if ($collection->dated()) {
-            $scopes->push(DateIsPast::class);
+            $scopes->push(Now::class);
         }
 
         $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);

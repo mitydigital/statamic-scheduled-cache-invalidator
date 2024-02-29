@@ -4,7 +4,7 @@ namespace MityDigital\StatamicScheduledCacheInvalidator\Scopes;
 
 use Statamic\Query\Scopes\Scope;
 
-class DateIsPast extends Scope
+class Now extends Scope
 {
     public function apply($query, $values)
     {
