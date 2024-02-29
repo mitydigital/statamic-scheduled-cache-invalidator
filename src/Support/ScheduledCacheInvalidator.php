@@ -3,10 +3,11 @@
 namespace MityDigital\StatamicScheduledCacheInvalidator\Support;
 
 use Carbon\Carbon;
+use Statamic\Support\Arr;
+use Statamic\Facades\Entry;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
-use Statamic\Facades\Entry;
-use Statamic\Support\Arr;
+use MityDigital\StatamicScheduledCacheInvalidator\Scopes\DateIsPast;
 
 class ScheduledCacheInvalidator
 {
@@ -25,7 +26,7 @@ class ScheduledCacheInvalidator
                     ->where('collection', $collection->handle())
                     ->where('published', true)
                     ->where(function ($query) use ($collection, $now) {
-                        $query->where(fn ($query) => $query->whereDate($collection->sortField() ?? 'date', $now->format('Y-m-d'))->whereTime($collection->sortField() ?? 'date', $now->format('H:i:s')));
+                        app(DateIsPast::class)->apply($query, ['collection' => $collection, 'now' => $now]);
 
                         // what scope do we want to use?
                         $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
