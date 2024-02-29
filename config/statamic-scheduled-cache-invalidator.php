@@ -18,11 +18,27 @@ return [
 
     'query_scopes' => null,
 
-    //'query_scopes' => \Path\To\Scope::class',
+    // 'query_scopes' => \Path\To\Scope::class,
 
-    //'query_scopes' => [
-    //    'collection_handle' => \Path\To\Scope::class,
-    //    'another_collection' => \Path\To\DifferentScope::class,
-    //],
+    // 'query_scopes' => [
+    //     \Path\To\Scope::class,
+    //     \Path\To\DifferentScope::class,
+    // ],
+
+    // 'query_scopes' => [
+    //     'collection_handle' => \Path\To\Scope::class,
+    //     'another_collection' => \Path\To\DifferentScope::class,
+    // ],
+
+    // 'query_scopes' => [
+    //     'collection_handle' => [
+    //         \Path\To\Scope::class,
+    //         \Path\To\DifferentScope::class,
+    //     ],
+    //     'another_collection' => [
+    //         \Path\To\Scope::class,
+    //         \Path\To\DifferentScope::class,
+    //     ],
+    // ],
 
 ];

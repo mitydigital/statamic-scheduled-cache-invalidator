@@ -31,22 +31,16 @@ class ScheduledCacheInvalidator
 
     protected function scopes(Collection $collection): \Illuminate\Support\Collection
     {
-        $scopes = collect();
+        $scopes = Arr::wrap(config('statamic-scheduled-cache-invalidator.query_scopes'));
+
+        if (Arr::isAssoc($scopes)) {
+            $scopes = Arr::wrap(Arr::get($scopes, $collection->handle()));
+        }
 
         if ($collection->dated()) {
-            $scopes->push(Now::class);
+            $scopes[] = Now::class;
         }
 
-        $scope = config('statamic-scheduled-cache-invalidator.query_scopes', null);
-
-        $scope = is_array($scope)
-            ? Arr::get($scope, $collection->handle())
-            : $scope;
-
-        if ($scope) {
-            $scopes->push($scope);
-        }
-
-        return $scopes->map(fn ($scope) => app($scope));
+        return collect($scopes)->map(fn ($scope) => app($scope));
     }
 }
