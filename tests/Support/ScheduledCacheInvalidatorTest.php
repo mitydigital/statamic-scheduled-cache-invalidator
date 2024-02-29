@@ -67,7 +67,7 @@ it('correctly gets an entry when time is enabled for the collection', function (
     expect($support->getEntries())->toHaveCount(0);
 });
 
-it('does not return entries from an undated collection', function () {
+it('does not return entries when there are no query scopes', function () {
     // get the support
     $support = app(ScheduledCacheInvalidator::class);
 
