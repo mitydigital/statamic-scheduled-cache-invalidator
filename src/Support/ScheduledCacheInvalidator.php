@@ -23,23 +23,14 @@ class ScheduledCacheInvalidator
         return CollectionFacade::all()
             ->filter(fn (Collection $collection) => $collection->dated())
             ->map(function (Collection $collection) use ($now) {
-                $entries = Entry::query()
+                return Entry::query()
                     ->where('collection', $collection->handle())
                     ->where('published', true)
-                    ->where(function ($query) use ($collection, $now) {
-                        $this->scopes($collection)
-                            ->each
-                            ->apply($query, ['collection' => $collection, 'now' => $now]);
-                    })
+                    ->where(fn ($query) =>  $this->scopes($collection)->each->apply($query, ['collection' => $collection, 'now' => $now]))
                     ->get();
-
-                // this triggers any publish status changes in the stache
-                $entries->each->saveQuietly();
-
-                return $entries;
             })
-            ->filter()
-            ->flatten();
+            ->flatten()
+            ->each->saveQuietly();
     }
 
     protected function scopes($collection): \Illuminate\Support\Collection
