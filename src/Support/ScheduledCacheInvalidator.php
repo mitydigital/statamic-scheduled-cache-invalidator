@@ -3,11 +3,11 @@
 namespace MityDigital\StatamicScheduledCacheInvalidator\Support;
 
 use Carbon\Carbon;
-use Statamic\Support\Arr;
-use Statamic\Facades\Entry;
+use MityDigital\StatamicScheduledCacheInvalidator\Scopes\Now;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
-use MityDigital\StatamicScheduledCacheInvalidator\Scopes\Now;
+use Statamic\Facades\Entry;
+use Statamic\Support\Arr;
 
 class ScheduledCacheInvalidator
 {
@@ -22,7 +22,7 @@ class ScheduledCacheInvalidator
                 return Entry::query()
                     ->where('collection', $collection->handle())
                     ->where('published', true)
-                    ->where(fn ($query) =>  $this->scopes($collection)->each->apply($query, ['collection' => $collection, 'now' => $now]))
+                    ->where(fn ($query) => $this->scopes($collection)->each->apply($query, ['collection' => $collection, 'now' => $now]))
                     ->get();
             })
             ->flatten()
