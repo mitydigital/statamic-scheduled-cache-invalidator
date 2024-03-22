@@ -26,7 +26,7 @@ class ScheduledCacheInvalidator
                     ->get();
             })
             ->flatten()
-            ->each->saveQuietly();
+            ->each->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
     }
 
     protected function scopes(Collection $collection): \Illuminate\Support\Collection
