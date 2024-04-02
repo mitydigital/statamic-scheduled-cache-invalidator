@@ -46,8 +46,12 @@ class RunCommand extends Command
 
             // let's clear the cache for each Entry
             $entries->each(function (Entry $entry, $index) use ($invalidator) {
-                // invalidate magic!
-                $invalidator->invalidate($entry);
+                // if we have saved normally, invalidation has already happened
+                if (config('statamic-scheduled-cache-invalidator.save_quietly', true)) {
+
+                    // invalidate magic!
+                    $invalidator->invalidate($entry);
+                }
 
                 // progress output
                 $this->line(__('statamic-scheduled-cache-invalidator::command.entries.invalidated', [
