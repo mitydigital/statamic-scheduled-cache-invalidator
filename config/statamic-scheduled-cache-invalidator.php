@@ -40,16 +40,17 @@ return [
     //         \Path\To\DifferentScope::class,
     //     ],
     // ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Save quietly
     |--------------------------------------------------------------------------
     |
-    | Do you want to save items quietly (true, so no events fired), or 
+    | Do you want to save items quietly (true, so no events fired), or
     | not quietly (false, events will be fired)
     |
     */
+
     'save_quietly' => true,
 
 ];

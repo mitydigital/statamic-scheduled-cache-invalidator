@@ -2,6 +2,7 @@
 
 use MityDigital\StatamicScheduledCacheInvalidator\Support\ScheduledCacheInvalidator;
 use Mockery\MockInterface;
+use Statamic\Entries\Entry;
 use Statamic\Query\Scopes\Scope;
 
 use function Spatie\PestPluginTestTime\testTime;
@@ -136,6 +137,42 @@ it('supports query scopes for collections', function () {
 
     // should have nothing returned - it's not dated
     expect($support->getEntries())->toHaveCount(0);
+});
+
+it('calls save quietly when configured', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    testTime()->freeze('2023-12-15 00:00:00');
+
+    expect(config('statamic-scheduled-cache-invalidator.save_quietly'))->toBeTrue();
+
+    $this->partialMock(Entry::class, function (MockInterface $mock) {
+        $mock->shouldReceive('saveQuietly')->times(3); // there are 3 entries
+        $mock->shouldReceive('save')->times(0);
+    });
+
+    // trigger save quietly
+    $support->getEntries();
+});
+
+it('calls save when configured', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    config(['statamic-scheduled-cache-invalidator.save_quietly' => false]);
+
+    testTime()->freeze('2023-12-15 00:00:00');
+
+    expect(config('statamic-scheduled-cache-invalidator.save_quietly'))->toBeFalse();
+
+    $this->partialMock(Entry::class, function (MockInterface $mock) {
+        $mock->shouldReceive('saveQuietly')->times(0);
+        $mock->shouldReceive('save')->times(3); // there are 3 entries
+    });
+
+    // trigger save quietly
+    $support->getEntries();
 });
 
 class TestScope extends Scope

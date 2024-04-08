@@ -22,11 +22,15 @@ class ScheduledCacheInvalidator
                 return Entry::query()
                     ->where('collection', $collection->handle())
                     ->where('published', true)
-                    ->where(fn ($query) => $this->scopes($collection)->each->apply($query, ['collection' => $collection, 'now' => $now]))
+                    ->where(fn ($query) => $this->scopes($collection)->each->apply($query, [
+                        'collection' => $collection,
+                        'now' => $now,
+                    ]))
                     ->get();
             })
             ->flatten()
-            ->each->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
+            ->each
+            ->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
     }
 
     protected function scopes(Collection $collection): \Illuminate\Support\Collection
