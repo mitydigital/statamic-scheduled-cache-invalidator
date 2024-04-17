@@ -14,7 +14,8 @@ class ScheduledCacheInvalidator
     public function getEntries(): \Illuminate\Support\Collection
     {
         // what is "now"? how existential...
-        $now = Carbon::now();
+        // set to be the start of the minute, because Statamic doesn't use seconds for publishing
+        $now = Carbon::now()->setSeconds(0);
 
         return CollectionFacade::all()
             ->filter(fn ($collection) => $this->scopes($collection)->isNotEmpty())
