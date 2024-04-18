@@ -68,6 +68,43 @@ it('correctly gets an entry when time is enabled for the collection', function (
     expect($support->getEntries())->toHaveCount(0);
 });
 
+it('correctly gets an entry when not run on the minute', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    // freeze time to be BEFORE publish
+    testTime()->freeze('2024-04-18 11:55:18');
+
+    expect($support->getEntries())->toHaveCount(0);
+
+    // freeze time to be ON publish
+    testTime()->freeze('2024-04-18 11:56:23');
+
+    $entries = $support->getEntries();
+
+    // should have 1, and the "dated_and_timed" collection
+    expect($entries)
+        ->toHaveCount(1)
+        ->and($entries->first()->collection()->handle())
+        ->toBe('dated_and_timed');
+
+    // freeze time to be ON publish, but an earlier day
+    testTime()->freeze('2024-04-17 11:56:23');
+
+    $entries = $support->getEntries();
+
+    // should have 1, and the "dated_and_timed_other" collection (same time, different day)
+    expect($entries)
+        ->toHaveCount(1)
+        ->and($entries->first()->collection()->handle())
+        ->toBe('dated_and_timed_other');
+
+    // freeze time to be AFTER publish
+    testTime()->freeze('2024-04-18 11:57:23');
+
+    expect($support->getEntries())->toHaveCount(0);
+});
+
 it('does not return entries when there are no query scopes', function () {
     // get the support
     $support = app(ScheduledCacheInvalidator::class);

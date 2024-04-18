@@ -12,6 +12,13 @@ class Now extends Scope
 
         $query
             ->whereDate($field, $values['now']->format('Y-m-d'))
-            ->whereTime($field, $values['now']->format('H:i').':00');
+            ->where(function ($query) use ($field, $values) {
+                $query->where(function ($query) use ($field, $values) {
+                    $query
+                        ->whereTime($field, '>=', $values['now']->format('H:i').':00')
+                        ->whereTime($field, '<=', $values['now']->format('H:i').':59');
+                })
+                    ->orWhereTime($field, $values['now']->format('H:i'));
+            });
     }
 }
