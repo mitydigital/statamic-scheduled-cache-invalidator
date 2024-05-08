@@ -53,4 +53,25 @@ return [
 
     'save_quietly' => true,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Now scope behaviour
+    |--------------------------------------------------------------------------
+    |
+    | An array of collection handles and the field handle to use as the
+    | "field" to use in the Now scope for date behaviour.
+    |
+    | You only need to specify collections that need overriding - otherwise
+    | the sortField (or 'date') will be used. All blueprints in the collection
+    | must have this field.
+    |
+    */
+
+    'now_fields' => [],
+
+    // 'now_fields' => [
+    //     'collection_handle' => 'another_date',
+    //     'another_collection' => 'processed_date'
+    // ]
+
 ];

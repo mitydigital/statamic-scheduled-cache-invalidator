@@ -105,6 +105,27 @@ it('correctly gets an entry when not run on the minute', function () {
     expect($support->getEntries())->toHaveCount(0);
 });
 
+it('gets entries from an orderable collection', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    // freeze time to be BEFORE publish
+    testTime()->freeze('2024-03-18 23:59:59');
+
+    expect($support->getEntries())->toHaveCount(0);
+
+    // freeze time to be ON publish
+    testTime()->freeze('2024-03-19 00:00:00');
+
+    $entries = $support->getEntries();
+
+    // should have 1, and the "dated_and_ordered" collection
+    expect($entries)
+        ->toHaveCount(1)
+        ->and($entries->first()->collection()->handle())
+        ->toBe('dated_and_orderable');
+});
+
 it('does not return entries when there are no query scopes', function () {
     // get the support
     $support = app(ScheduledCacheInvalidator::class);
@@ -126,7 +147,7 @@ it('supports query scopes', function () {
     config()->set('statamic-scheduled-cache-invalidator.query_scopes', TestScope::class);
 
     $this->partialMock(TestScope::class, function (MockInterface $mock) {
-        $mock->shouldReceive('apply')->times(4);
+        $mock->shouldReceive('apply')->times(7); // there are 7 collections configured
     });
 
     // should have nothing returned - it's not dated
