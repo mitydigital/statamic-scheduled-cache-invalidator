@@ -54,4 +54,7 @@ help you. So be awesome - it'll feel fantastic.
 ## Credits
 
 - [Marty Friedel](https://github.com/martyf)
-- [Ryan Mitchell](https://github.com/ryanmitchell) for tweaking clearing behaviour to help with entries, adding query scope support, and date/time query corrections following core updates
+- [Ryan Mitchell](https://github.com/ryanmitchell) for tweaking clearing behaviour to help with entries, adding query
+  scope support, and date/time query corrections following core updates
+- [Michael Aerni](https://github.com/aerni) for support of undated collections
+- [Sylvester Damgaard](https://github.com/SylvesterDamgaard) for correcting an SQL issue
