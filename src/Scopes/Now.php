@@ -31,7 +31,7 @@ class Now extends Scope
                         ->whereTime($field, '>=', $values['now']->format('H:i').':00')
                         ->whereTime($field, '<=', $values['now']->format('H:i').':59');
                 })
-                    ->orWhereTime($field, $values['now']->format('H:i'));
+                    ->orWhereTime($field, '=', $values['now']->format('H:i'));
             });
     }
 
