@@ -254,6 +254,15 @@ it('dispatches the scheduled cache invalidated event', function () {
     });
 });
 
+it('does not dispatch the event when there are no entries invalidated', function () {
+    Event::fake();
+
+    $support = app(ScheduledCacheInvalidator::class);
+    $support->getEntries();
+
+    Event::assertNotDispatched(ScheduledCacheInvalidated::class);
+});
+
 class TestScope extends Scope
 {
     public function apply($query, $params)
