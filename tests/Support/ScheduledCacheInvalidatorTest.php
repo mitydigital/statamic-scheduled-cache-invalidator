@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
+use MityDigital\StatamicScheduledCacheInvalidator\Events\ScheduledCacheInvalidated;
 use MityDigital\StatamicScheduledCacheInvalidator\Support\ScheduledCacheInvalidator;
 use Mockery\MockInterface;
 use Statamic\Entries\Entry;
@@ -231,6 +233,25 @@ it('calls save when configured', function () {
 
     // trigger save quietly
     $support->getEntries();
+});
+
+it('dispatches the scheduled cache invalidated event', function () {
+    // get the support
+    $support = app(ScheduledCacheInvalidator::class);
+
+    config(['statamic-scheduled-cache-invalidator.save_quietly' => false]);
+
+    testTime()->freeze('2023-12-15 00:00:00');
+
+    expect(config('statamic-scheduled-cache-invalidator.save_quietly'))->toBeFalse();
+
+    Event::fake();
+
+    $support->getEntries();
+
+    Event::assertDispatched(ScheduledCacheInvalidated::class, function (ScheduledCacheInvalidated $event) {
+        return expect($event->collections)->toBeArray()->toMatchArray(['dated']);
+    });
 });
 
 class TestScope extends Scope

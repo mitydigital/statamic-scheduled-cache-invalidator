@@ -3,6 +3,7 @@
 namespace MityDigital\StatamicScheduledCacheInvalidator\Support;
 
 use Carbon\Carbon;
+use MityDigital\StatamicScheduledCacheInvalidator\Events\ScheduledCacheInvalidated;
 use MityDigital\StatamicScheduledCacheInvalidator\Scopes\Now;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
@@ -17,7 +18,7 @@ class ScheduledCacheInvalidator
         // set to be the start of the minute, because Statamic doesn't use seconds for publishing
         $now = Carbon::now()->setSeconds(0);
 
-        return CollectionFacade::all()
+        $entries = CollectionFacade::all()
             ->filter(fn ($collection) => $this->scopes($collection)->isNotEmpty())
             ->map(function (Collection $collection) use ($now) {
                 return Entry::query()
@@ -32,6 +33,17 @@ class ScheduledCacheInvalidator
             ->flatten()
             ->each
             ->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
+
+        // dispatch the event, with the collection of collection handles
+        ScheduledCacheInvalidated::dispatch(
+            $entries->filter(fn ($entry) => get_class($entry) === \Statamic\Entries\Entry::class)
+                ->pluck('collection')
+                ->pluck('handle')
+                ->unique()
+                ->toArray()
+        );
+
+        return $entries;
     }
 
     protected function scopes(Collection $collection): \Illuminate\Support\Collection
