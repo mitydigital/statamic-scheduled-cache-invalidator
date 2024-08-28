@@ -34,14 +34,16 @@ class ScheduledCacheInvalidator
             ->each
             ->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
 
-        // dispatch the event, with the collection of collection handles
-        ScheduledCacheInvalidated::dispatch(
-            $entries->filter(fn ($entry) => get_class($entry) === \Statamic\Entries\Entry::class)
-                ->pluck('collection')
-                ->pluck('handle')
-                ->unique()
-                ->toArray()
-        );
+        $collections = $entries->filter(fn ($entry) => get_class($entry) === \Statamic\Entries\Entry::class)
+            ->pluck('collection')
+            ->pluck('handle')
+            ->unique()
+            ->toArray();
+
+        if (count($collections)) {
+            // dispatch the event, with the collection of collection handles
+            ScheduledCacheInvalidated::dispatch($collections);
+        }
 
         return $entries;
     }
