@@ -5,6 +5,7 @@ namespace MityDigital\StatamicScheduledCacheInvalidator\Support;
 use Carbon\Carbon;
 use MityDigital\StatamicScheduledCacheInvalidator\Events\ScheduledCacheInvalidated;
 use MityDigital\StatamicScheduledCacheInvalidator\Scopes\Now;
+use ReflectionClass;
 use Statamic\Entries\Collection;
 use Statamic\Facades\Collection as CollectionFacade;
 use Statamic\Facades\Entry;
@@ -34,8 +35,8 @@ class ScheduledCacheInvalidator
             ->each
             ->{config('statamic-scheduled-cache-invalidator.save_quietly', true) ? 'saveQuietly' : 'save'}();
 
-        $collections = $entries->filter(fn ($entry) => get_class($entry) === \Statamic\Entries\Entry::class)
-            ->pluck('collection')
+        $collections = $entries->filter(fn ($entry) => get_class($entry) === \Statamic\Entries\Entry::class || (new ReflectionClass($entry))->isSubclassOf(\Statamic\Entries\Entry::class))
+            ->map(fn ($entry) => $entry->collection())
             ->pluck('handle')
             ->unique()
             ->toArray();
