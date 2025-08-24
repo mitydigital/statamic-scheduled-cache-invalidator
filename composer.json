@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "statamic/cms": "^4.0 || ^5.0"
+        "statamic/cms": "^4.0|^5.0|^6.0"
     },
     "extra": {
         "statamic": {
@@ -38,11 +38,12 @@
         }
     },
     "require-dev": {
-        "pestphp/pest": "^2.9",
-        "orchestra/testbench": "^8.5",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "orchestra/testbench": "^10.0",
         "laravel/pint": "^1.10",
         "spatie/pest-plugin-test-time": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.1",
+        "pestphp/pest-plugin-laravel": "^3.0",
         "spatie/x-ray": "^1.1"
     },
     "scripts": {

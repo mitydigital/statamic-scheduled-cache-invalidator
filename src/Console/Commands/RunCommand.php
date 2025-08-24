@@ -39,7 +39,8 @@ class RunCommand extends Command
             $invalidator = app(Invalidator::class);
 
             // let's communicate - single or plural
-            $this->info(__($entries->count() === 1 ? 'statamic-scheduled-cache-invalidator::command.entries.single' : 'statamic-scheduled-cache-invalidator::command.entries.count',
+            $this->info(__($entries->count() === 1 ? 'statamic-scheduled-cache-invalidator::command.entries.single'
+                : 'statamic-scheduled-cache-invalidator::command.entries.count',
                 [
                     'count' => $entries->count(),
                 ]));

@@ -25,7 +25,6 @@ it('returns the correct message when static caching disabled', function () {
 });
 
 it('returns the correct message when static caching enabled', function () {
-
     // return nothing
     $this->partialMock(ScheduledCacheInvalidator::class, function (MockInterface $mock) {
         $mock->shouldReceive('getEntries')
