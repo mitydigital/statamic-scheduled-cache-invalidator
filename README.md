@@ -4,6 +4,7 @@
 
 ![Statamic 4.0](https://img.shields.io/badge/Statamic-4.0-FF269E?style=for-the-badge&link=https://statamic.com)
 ![Statamic 5.0](https://img.shields.io/badge/Statamic-5.0-FF269E?style=for-the-badge&link=https://statamic.com)
+![Statamic 6.0](https://img.shields.io/badge/Statamic-6.0-FF269E?style=for-the-badge&link=https://statamic.com)
 [![Scheduled Cache Invalidator for Statamic on Packagist](https://img.shields.io/packagist/v/mitydigital/statamic-scheduled-cache-invalidator?style=for-the-badge)](https://packagist.org/packages/mitydigital/statamic-scheduled-cache-invalidator/stats)
 
 ---
