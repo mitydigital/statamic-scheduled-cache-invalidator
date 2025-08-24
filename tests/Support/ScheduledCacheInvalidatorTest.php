@@ -265,14 +265,10 @@ it('does not dispatch the event when there are no entries invalidated', function
 
 class TestScope extends Scope
 {
-    public function apply($query, $params)
-    {
-    }
+    public function apply($query, $params) {}
 }
 
 class AnotherTestScope extends Scope
 {
-    public function apply($query, $params)
-    {
-    }
+    public function apply($query, $params) {}
 }

@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'completed' => 'Scheduled Cache Invalidator has finished.',
 
     'disabled' => 'Static Caching is disabled: there is nothing for the Scheduled Caching Invalidator to do.',
